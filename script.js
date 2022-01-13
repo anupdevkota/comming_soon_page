@@ -1,40 +1,33 @@
-window.addEventListener('load', () => {
+let launchDate = new Date("february 1, 2022, 00:00:00").getTime();
 
-    const computeDates = () => {
-        // Assuming the website will go live the next first January
-        var date_future = new Date(new Date().getHalfYear() + 1, 0, 1);
-        const date_now = new Date();
+const second = 1000;
+const minute = second * 60;
+const hour = minute * 60;
+const day = hour * 24;
 
-        // get total seconds between dates
-        var delta = Math.abs(date_future - date_now) / 1000;
+const dayValue = document.querySelector(".counter .unit-container .day");
+const hourValue = document.querySelector(".counter .unit-container .hour");
+const minuteValue = document.querySelector(".counter .unit-container .minute");
+const secondValue = document.querySelector(".counter .unit-container .second");
 
-        // calculate (and subtract) whole days
-        var days = Math.floor(delta / 86400);
-        delta -= days * 86400;
+const counter = document.querySelector(".counter");
+const subHeading = document.querySelector(".my-container .right p");
 
-        // calculate (and subtract) whole hours
-        var hours = Math.floor(delta / 3600) % 24;
-        delta -= hours * 3600;
+const updateCounter = () => {
+  let now = new Date().getTime();
+  let gap = launchDate - now;
 
-        // calculate (and subtract) whole minutes
-        var minutes = Math.floor(delta / 60) % 24;
-        delta -= minutes * 60;
+  dayValue.innerHTML = ("0" + Math.floor(gap / day)).slice(-2);
+  hourValue.innerHTML = ("0" + Math.floor((gap % day) / hour)).slice(-2);
+  minuteValue.innerHTML = ("0" + Math.floor((gap % hour) / minute)).slice(-2);
+  secondValue.innerHTML = ("0" + Math.floor((gap % minute) / second)).slice(-2);
 
-        // what's left is seconds
-        var seconds = delta % 60;
+  if (gap < 0) {
+    counter.style.display = "none";
+    subHeading.innerHTML = "Hi, please stay tuned for some awesome features";
+  }
+};
 
-        // Now insert computed values into our html
-        document.getElementById('days').innerHTML = days;
-        document.getElementById('hours').innerHTML = hours;
-        document.getElementById('minutes').innerHTML = minutes;
-        document.getElementById('seconds').innerHTML = Math.floor(seconds);
-    };
+updateCounter();
 
-    // compute every 1s (1000ms)
-    setInterval(() => {
-        computeDates();
-    }, 1000);
-
-    // compute immediatly
-    computeDates();
-})
+setInterval(updateCounter, 1000);
